@@ -3,17 +3,14 @@ import { v4 as uuidv4 } from 'uuid';
 
 // TODO: Define a City class with name and id properties
 class City {
-  name: string
-  id: number // maybe?
+  id: string; // Should be a string (since uuidv4() generates a string)
+  name: string;
 
-  constructor (
-    name: string,
-    id: number,
-
-  ) {
+  constructor(name: string, id?: string) {
     this.name = name;
-    this.id = id;
-  }};
+    this.id = id || uuidv4(); // If an ID is provided, use it; otherwise, generate a new UUID
+  }
+}
 
 // TODO: Complete the HistoryService class
 class HistoryService {
@@ -58,7 +55,12 @@ class HistoryService {
 
   };
   // * BONUS TODO: Define a removeCity method that removes a city from the searchHistory.json file
-  // async removeCity(id: string) {}
+  async removeCity(id: string) {
+    return await this.getCities().then((cities) => {
+      const updatedCities = cities.filter((city) => city.id !== id);
+      return this.write(updatedCities);
+    });
+  }
 }
 
-export default new HistoryService();
+export default HistoryService;
